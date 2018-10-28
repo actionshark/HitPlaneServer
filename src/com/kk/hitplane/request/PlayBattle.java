@@ -8,14 +8,14 @@ import com.kk.hitplane.reponse.ShowToast;
 public class PlayBattle extends Request {
 	public int row;
 	public int col;
-	
+
 	@Override
 	public boolean exe() {
 		Battle battle = BattleMgr.getInstance().getByUserId(mUserInfo.id);
-		
+
 		if (battle != null) {
 			String error = battle.play(mUserInfo, row, col);
-			
+
 			if (error == null) {
 				return true;
 			} else {
@@ -25,7 +25,7 @@ public class PlayBattle extends Request {
 				return false;
 			}
 		}
-		
+
 		return false;
 	}
 }

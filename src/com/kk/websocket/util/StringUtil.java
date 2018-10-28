@@ -14,7 +14,7 @@ public class StringUtil {
 		} catch (Exception e) {
 			Logger.getInstance().print(null, Level.E, e);
 		}
-		
+
 		return null;
 	}
 }

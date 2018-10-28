@@ -9,7 +9,7 @@ public class GetTime extends Request {
 		NoticeTime nt = new NoticeTime();
 		nt.time = System.currentTimeMillis();
 		nt.send(mUserInfo);
-		
+
 		return true;
 	}
 }

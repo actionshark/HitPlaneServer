@@ -10,16 +10,16 @@ public class BattleEnd extends Response {
 		public int type;
 		public int owner;
 	}
-	
+
 	public int winner;
-	
+
 	public List<Tile> tiles = new ArrayList<>();
-	
+
 	public void encode(int winner, List<com.kk.hitplane.battle.Battle.Tile> tiles) {
 		this.winner = winner;
-		
+
 		this.tiles.clear();
-		
+
 		for (com.kk.hitplane.battle.Battle.Tile server : tiles) {
 			Tile client = new Tile();
 			client.type = server.type;

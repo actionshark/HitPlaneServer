@@ -9,7 +9,7 @@ public class Main {
 		FileLogger logger = new FileLogger();
 		logger.setFiles("log1.txt", "log2.txt");
 		Logger.setInstance(logger);
-		
+
 		Server server = Server.getInstance();
 		server.start();
 
