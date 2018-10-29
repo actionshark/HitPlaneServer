@@ -13,7 +13,7 @@ import com.kk.websocket.Session;
 import com.kk.websocket.util.ThreadUtil;
 
 public class Server implements ServerEndpoint {
-	public static final long CLOSE_DURATION = 60000;
+	public static final long CLOSE_DURATION = 30000;
 
 	private static final Server sServer = new Server();
 
@@ -112,7 +112,7 @@ public class Server implements ServerEndpoint {
 
 		return list;
 	}
-	
+
 	public synchronized void onLogin(UserInfo ui) {
 		List<Session> removes = new ArrayList<>();
 
@@ -124,7 +124,7 @@ public class Server implements ServerEndpoint {
 				removes.add(key);
 			}
 		}
-		
+
 		ShowToast toast = new ShowToast();
 		toast.text = "账号在别处登录";
 

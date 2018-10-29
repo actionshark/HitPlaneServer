@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.kk.hitplane.DatabaseUtil;
 import com.kk.hitplane.UserInfo;
+import com.kk.hitplane.database.UserInfoDB;
 import com.kk.hitplane.reponse.BattleEnd;
 import com.kk.hitplane.reponse.ShowToast;
 import com.kk.hitplane.reponse.TurnChange;
@@ -161,9 +161,8 @@ public class Battle {
 			st.send(a);
 			st.send(b);
 
-			DatabaseUtil dbu = DatabaseUtil.getInstance();
-			dbu.updateBattleCount(a, a == last.owner ? 1 : 0, a == last.owner ? 0 : 1);
-			dbu.updateBattleCount(b, b == last.owner ? 1 : 0, b == last.owner ? 0 : 1);
+			UserInfoDB.updateBattleCount(a, a == last.owner ? 1 : 0, a == last.owner ? 0 : 1);
+			UserInfoDB.updateBattleCount(b, b == last.owner ? 1 : 0, b == last.owner ? 0 : 1);
 		}
 	}
 

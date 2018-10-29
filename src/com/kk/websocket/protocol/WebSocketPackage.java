@@ -130,9 +130,9 @@ public class WebSocketPackage {
 
 		fin = (bt & 0b10000000) != 0;
 
-//		if ((bt & 0b01110000) != 0) {
-//			throw new Exception("");
-//		}
+		// if ((bt & 0b01110000) != 0) {
+		// throw new Exception("");
+		// }
 
 		opcode = bt & 0b1111;
 

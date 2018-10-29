@@ -8,14 +8,12 @@ public class UserInfo {
 	public static final int STATUS_BATTLE = 2;
 	public static final int STATUS_WATCH = 3;
 
-	private static int sCount = 0;
-
 	public Session session;
 
 	public String username;
 	public int id = 0;
 	public String nickname;
-	
+
 	public int winCount = 0;
 	public int loseCount = 0;
 
@@ -24,15 +22,6 @@ public class UserInfo {
 
 	public UserInfo(Session session) {
 		this.session = session;
-	}
-
-	public void onLogin() {
-		synchronized (UserInfo.class) {
-			id = ++sCount;
-		}
-
-		nickname = "用户" + id;
-		status = STATUS_IDLE;
 	}
 
 	public void markRequest() {
