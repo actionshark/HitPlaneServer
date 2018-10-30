@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.kk.hitplane.Server;
 import com.kk.hitplane.UserInfo;
 import com.kk.hitplane.reponse.RequestEnd;
 import com.kk.websocket.util.ThreadUtil;
@@ -51,7 +52,7 @@ public class BattleMgr {
 
 	public synchronized Battle getByUserId(int id) {
 		for (Battle battle : mBattles.values()) {
-			if (id == battle.a.id || id == battle.b.id) {
+			if (id == battle.a || id == battle.b) {
 				return battle;
 			}
 		}
@@ -71,7 +72,7 @@ public class BattleMgr {
 		}
 
 		for (Battle bt : mBattles.values()) {
-			if (a.id == bt.a.id || a.id == bt.b.id || b.id == bt.a.id || b.id == bt.b.id) {
+			if (a.id == bt.a || a.id == bt.b || b.id == bt.a || b.id == bt.b) {
 
 				return false;
 			}
@@ -106,24 +107,37 @@ public class BattleMgr {
 		}
 
 		for (Battle bt : mBattles.values()) {
-			if (a.id == bt.a.id || a.id == bt.b.id || b.id == bt.a.id || b.id == bt.b.id) {
+			if (a.id == bt.a || a.id == bt.b || b.id == bt.a || b.id == bt.b) {
 
 				return null;
 			}
 		}
 
-		Battle battle = new Battle(a, b);
+		Battle battle = new Battle(a.id, b.id);
 		mBattles.put(battle.id, battle);
 		battle.start();
+
+		a.status = b.status = UserInfo.STATUS_BATTLE;
 
 		return battle;
 	}
 
 	public synchronized void remove(int id) {
 		Battle battle = mBattles.remove(id);
+		if (battle == null) {
+			return;
+		}
 
-		if (battle != null) {
-			battle.a.status = battle.b.status = UserInfo.STATUS_IDLE;
+		Server server = Server.getInstance();
+
+		UserInfo a = server.getUserInfo(battle.a);
+		if (a != null) {
+			a.status = UserInfo.STATUS_IDLE;
+		}
+
+		UserInfo b = server.getUserInfo(battle.b);
+		if (b != null) {
+			b.status = UserInfo.STATUS_IDLE;
 		}
 	}
 }

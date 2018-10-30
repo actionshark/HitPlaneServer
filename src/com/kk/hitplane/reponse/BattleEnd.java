@@ -11,19 +11,19 @@ public class BattleEnd extends Response {
 		public int owner;
 	}
 
-	public int winner;
+	public int winnerId;
 
 	public List<Tile> tiles = new ArrayList<>();
 
-	public void encode(int winner, List<com.kk.hitplane.battle.Battle.Tile> tiles) {
-		this.winner = winner;
+	public void encode(int winnerId, List<com.kk.hitplane.battle.Battle.Tile> tiles) {
+		this.winnerId = winnerId;
 
 		this.tiles.clear();
 
 		for (com.kk.hitplane.battle.Battle.Tile server : tiles) {
 			Tile client = new Tile();
 			client.type = server.type;
-			client.owner = server.owner == null ? 0 : server.owner.id;
+			client.owner = server.owner;
 			this.tiles.add(client);
 		}
 	}

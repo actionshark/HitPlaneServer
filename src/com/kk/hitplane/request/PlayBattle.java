@@ -14,7 +14,7 @@ public class PlayBattle extends Request {
 		Battle battle = BattleMgr.getInstance().getByUserId(mUserInfo.id);
 
 		if (battle != null) {
-			String error = battle.play(mUserInfo, row, col);
+			String error = battle.play(mUserInfo.id, row, col);
 
 			if (error == null) {
 				return true;

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.kk.hitplane.Server;
 import com.kk.hitplane.UserInfo;
 import com.kk.hitplane.database.UserInfoDB;
 import com.kk.hitplane.reponse.BattleEnd;
-import com.kk.hitplane.reponse.ShowToast;
 import com.kk.hitplane.reponse.TurnChange;
 
 public class Battle {
@@ -20,7 +20,7 @@ public class Battle {
 
 	public static class Tile {
 		public int type;
-		public UserInfo owner;
+		public int owner = 0;
 	}
 
 	public static final int[][] PLANE = new int[][] { { TILE_EMPTY, TILE_EMPTY, TILE_HEAD, TILE_EMPTY, TILE_EMPTY, },
@@ -34,16 +34,16 @@ public class Battle {
 
 	public final int id;
 
-	public final UserInfo a;
-	public final UserInfo b;
+	public final int a;
+	public final int b;
 
-	private UserInfo mTurn;
+	private int mTurn;
 
 	private final Tile[][] mTiles = new Tile[ROW_NUM][COL_NUM];
 
 	private final Random mRandom = new Random();
 
-	public Battle(UserInfo a, UserInfo b) {
+	public Battle(int a, int b) {
 		synchronized (Battle.class) {
 			id = ++sCount;
 		}
@@ -128,15 +128,16 @@ public class Battle {
 	}
 
 	private void next(int row, int col, Tile last) {
+		UserInfo aui = Server.getInstance().getUserInfo(a);
+		UserInfo bui = Server.getInstance().getUserInfo(b);
+
 		TurnChange tc = new TurnChange();
 
-		if (mTurn == null) {
+		if (mTurn == 0) {
 			tc.id = 0;
-
-			BattleMgr.getInstance().remove(id);
 		} else {
 			mTurn = mTurn == a ? b : a;
-			tc.id = mTurn.id;
+			tc.id = mTurn;
 		}
 
 		if (last != null) {
@@ -146,28 +147,25 @@ public class Battle {
 			tc.tile.encode(last);
 		}
 
-		tc.send(a);
-		tc.send(b);
+		tc.send(aui);
+		tc.send(bui);
 
-		if (mTurn == null) {
+		if (mTurn == 0) {
+			BattleMgr.getInstance().remove(id);
+
 			BattleEnd be = new BattleEnd();
-			be.encode(last.owner.id, getTiles());
+			be.encode(last.owner, getTiles());
 
-			be.send(a);
-			be.send(b);
-
-			ShowToast st = new ShowToast();
-			st.text = last.owner.nickname + "胜利";
-			st.send(a);
-			st.send(b);
+			be.send(aui);
+			be.send(bui);
 
 			UserInfoDB.updateBattleCount(a, a == last.owner ? 1 : 0, a == last.owner ? 0 : 1);
 			UserInfoDB.updateBattleCount(b, b == last.owner ? 1 : 0, b == last.owner ? 0 : 1);
 		}
 	}
 
-	public synchronized String play(UserInfo ui, int row, int col) {
-		if (mTurn.id != ui.id) {
+	public synchronized String play(int uid, int row, int col) {
+		if (mTurn != uid) {
 			return "不是你的回合";
 		}
 
@@ -177,14 +175,14 @@ public class Battle {
 
 		Tile tile = mTiles[row][col];
 
-		if (tile.owner != null) {
+		if (tile.owner != 0) {
 			return "这里点过了";
 		}
 
 		tile.owner = mTurn;
 
 		if (tile.type == TILE_HEAD) {
-			mTurn = null;
+			mTurn = 0;
 		}
 
 		next(row, col, tile);
@@ -192,7 +190,7 @@ public class Battle {
 		return null;
 	}
 
-	public UserInfo getTurn() {
+	public int getTurn() {
 		return mTurn;
 	}
 

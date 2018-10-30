@@ -120,13 +120,13 @@ public class Server implements ServerEndpoint {
 			Session key = entry.getKey();
 			UserInfo value = entry.getValue();
 
-			if (value != ui) {
+			if (value.id == ui.id && value != ui) {
 				removes.add(key);
 			}
 		}
 
 		ShowToast toast = new ShowToast();
-		toast.text = "账号在别处登录";
+		toast.text = "账号重登录";
 
 		for (Session session : removes) {
 			UserInfo userInfo = mUsers.remove(session);

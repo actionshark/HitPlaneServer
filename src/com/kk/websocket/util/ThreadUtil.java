@@ -16,7 +16,12 @@ public class ThreadUtil {
 	public static void run(Runnable runnable, long delay) {
 		sService.submit(() -> {
 			sleep(delay);
-			runnable.run();
+
+			try {
+				runnable.run();
+			} catch (Exception e) {
+				Logger.getInstance().print(null, Level.E, e);
+			}
 		});
 	}
 

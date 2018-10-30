@@ -20,11 +20,11 @@ public class SetNickname extends Request {
 			ShowToast toast = new ShowToast();
 			toast.text = "设置昵称成功";
 			toast.send(mUserInfo);
-			
+
 			UserInfo info = new UserInfo();
 			info.encode(mUserInfo);
 			info.send(mUserInfo);
-			
+
 			return true;
 		} else {
 			ShowToast toast = new ShowToast();

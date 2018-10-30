@@ -6,6 +6,7 @@ import java.util.List;
 import com.kk.hitplane.Response;
 import com.kk.hitplane.UserInfo;
 import com.kk.hitplane.battle.Battle;
+import com.kk.hitplane.database.UserInfoDB;
 
 public class BattleInfo extends Response {
 	public static final int STATUS_NORMAL = 0;
@@ -18,9 +19,9 @@ public class BattleInfo extends Response {
 		public int owner;
 
 		public void encode(com.kk.hitplane.battle.Battle.Tile tile) {
-			owner = tile.owner == null ? 0 : tile.owner.id;
+			owner = tile.owner;
 
-			if (tile.owner == null) {
+			if (tile.owner == 0) {
 				status = STATUS_NORMAL;
 			} else if (tile.type == Battle.TILE_EMPTY) {
 				status = STATUS_MISS;
@@ -43,14 +44,15 @@ public class BattleInfo extends Response {
 	public List<Tile> tiles = new ArrayList<>();
 
 	public void encode(Battle battle) {
-		idA = battle.a.id;
-		nicknameA = battle.a.nickname;
+		idA = battle.a;
+		UserInfo aui = UserInfoDB.getUserInfo(idA);
+		nicknameA = aui == null ? "" : aui.nickname;
 
-		idB = battle.b.id;
-		nicknameB = battle.b.nickname;
+		idB = battle.b;
+		UserInfo bui = UserInfoDB.getUserInfo(idB);
+		nicknameB = bui == null ? "" : bui.nickname;
 
-		UserInfo tn = battle.getTurn();
-		turn = tn == null ? 0 : tn.id;
+		turn = battle.getTurn();
 
 		List<com.kk.hitplane.battle.Battle.Tile> list = battle.getTiles();
 		for (com.kk.hitplane.battle.Battle.Tile tile : list) {

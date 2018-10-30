@@ -93,6 +93,10 @@ public abstract class Response {
 	}
 
 	public boolean send(UserInfo userInfo) {
+		if (userInfo == null) {
+			return false;
+		}
+
 		try {
 			JSONObject jo = pack();
 			userInfo.session.send(jo.toString());

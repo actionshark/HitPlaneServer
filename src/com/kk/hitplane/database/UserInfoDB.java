@@ -115,14 +115,14 @@ public class UserInfoDB {
 		return "修改昵称失败";
 	}
 
-	public static synchronized boolean updateBattleCount(UserInfo ui, int winDelta, int loseDelta) {
+	public static synchronized boolean updateBattleCount(int uid, int winDelta, int loseDelta) {
 		Statement stmt = null;
 
 		try {
 			stmt = getStatement();
 
 			String sql = String.format("update %s set %s=%s+%d, %s=%s+%d where %s=%d", TB_NAME, COL_WIN_COUNT,
-					COL_WIN_COUNT, winDelta, COL_LOSE_COUNT, COL_LOSE_COUNT, loseDelta, COL_ID, ui.id);
+					COL_WIN_COUNT, winDelta, COL_LOSE_COUNT, COL_LOSE_COUNT, loseDelta, COL_ID, uid);
 			int ct = stmt.executeUpdate(sql);
 
 			if (ct != 1) {
@@ -140,5 +140,42 @@ public class UserInfoDB {
 		}
 
 		return false;
+	}
+
+	public static synchronized UserInfo getUserInfo(int id) {
+		Statement stmt = null;
+
+		try {
+			stmt = getStatement();
+			UserInfo ui = new UserInfo(null);
+
+			String sql = String.format("select * from %s where %s=%d", TB_NAME, COL_ID, id);
+			ResultSet rs = stmt.executeQuery(sql);
+
+			if (!rs.next()) {
+				rs.close();
+				return null;
+			}
+
+			ui.username = rs.getString(COL_USERNAME);
+			ui.id = id;
+			ui.nickname = rs.getString(COL_NICKNAME);
+
+			ui.winCount = rs.getInt(COL_WIN_COUNT);
+			ui.loseCount = rs.getInt(COL_LOSE_COUNT);
+
+			rs.close();
+
+			return ui;
+		} catch (Exception e) {
+			Logger.getInstance().print(null, Level.E, e);
+		} finally {
+			try {
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+
+		return null;
 	}
 }

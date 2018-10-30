@@ -26,8 +26,9 @@ public class DatabaseUtil {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 
-			String url = String.format("jdbc:mysql://%s:%d/%s?autoReconnect=true&useUnicode=true&characterEncoding=utf8",
-					mHost, mPort, mDbName);
+			String url = String.format(
+					"jdbc:mysql://%s:%d/%s?autoReconnect=true&useUnicode=true&characterEncoding=utf8", mHost, mPort,
+					mDbName);
 			mConn = DriverManager.getConnection(url, mUserName, mPassword);
 		} catch (Exception e) {
 			Logger.getInstance().print(null, Level.E, e);
