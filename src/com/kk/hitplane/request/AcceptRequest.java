@@ -14,20 +14,20 @@ public class AcceptRequest extends Request {
 
 	@Override
 	public boolean exe() {
-		UserInfo ui = Server.getInstance().getUserInfo(enemy);
-		if (ui == null) {
+		UserInfo b = Server.getInstance().getUserInfo(enemy);
+		if (b == null) {
 			return false;
 		}
 
 		BattleMgr mgr = BattleMgr.getInstance();
 
-		Req req = mgr.removeReq(ui.id, mUserInfo.id);
+		Req req = mgr.removeReq(b.id, mUserInfo.id);
 		if (req == null) {
 			return false;
 		}
-		RequestEnd.noticeAll(ui, mUserInfo, null);
+		RequestEnd.noticeAll(b.id, mUserInfo.id, null);
 
-		Battle battle = mgr.add(ui, mUserInfo);
+		Battle battle = mgr.add(b, mUserInfo);
 		if (battle == null) {
 			return false;
 		}
@@ -35,7 +35,7 @@ public class AcceptRequest extends Request {
 		BattleInfo bi = new BattleInfo();
 		bi.encode(battle);
 		bi.send(mUserInfo);
-		bi.send(ui);
+		bi.send(b);
 
 		return true;
 	}

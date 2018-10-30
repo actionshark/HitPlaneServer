@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.kk.hitplane.reponse.ShowToast;
+import com.kk.hitplane.reponse.Logout;
 import com.kk.websocket.ServerEndpoint;
 import com.kk.websocket.Session;
 import com.kk.websocket.util.ThreadUtil;
@@ -36,9 +36,13 @@ public class Server implements ServerEndpoint {
 						removes.add(key);
 					}
 				}
+				
+				Logout logout = new Logout();
+				logout.reason = "长时间未请求，自动踢出";
 
 				for (Session session : removes) {
-					mUsers.remove(session);
+					UserInfo ui = mUsers.remove(session);
+					logout.send(ui);
 				}
 			}
 		}, 1000, 3000, -1);
@@ -69,15 +73,31 @@ public class Server implements ServerEndpoint {
 			ui = mUsers.get(session);
 		}
 
-		if (ui != null) {
-			ui.markRequest();
-			Request.dispatch(ui, text);
+		if (ui == null) {
+			onOpen(session);
+			
+			synchronized (this) {
+				ui = mUsers.get(session);
+			}
 		}
+		
+		ui.markRequest();
+		Request.dispatch(ui, text);
 	}
 
 	@Override
 	public void onError(Session session, Throwable error) {
-
+		UserInfo ui = null;
+		
+		synchronized (this) {
+			ui = mUsers.remove(session);
+		}
+		
+		if (ui != null) {
+			Logout logout = new Logout();
+			logout.reason = "出错服务器主动断开";
+			logout.send(ui);
+		}
 	}
 
 	public UserInfo getUserInfo(int id) {
@@ -124,13 +144,13 @@ public class Server implements ServerEndpoint {
 				removes.add(key);
 			}
 		}
-
-		ShowToast toast = new ShowToast();
-		toast.text = "账号重登录";
+		
+		Logout logout = new Logout();
+		logout.reason = "重登录";
 
 		for (Session session : removes) {
 			UserInfo userInfo = mUsers.remove(session);
-			toast.send(userInfo);
+			logout.send(userInfo);
 		}
 	}
 }

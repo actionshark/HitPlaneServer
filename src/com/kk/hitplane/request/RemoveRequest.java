@@ -19,7 +19,7 @@ public class RemoveRequest extends Request {
 		BattleMgr mgr = BattleMgr.getInstance();
 
 		if (mgr.removeReq(mUserInfo.id, ui.id) != null || mgr.removeReq(ui.id, mUserInfo.id) != null) {
-			RequestEnd.noticeAll(mUserInfo, ui, "挑战已取消");
+			RequestEnd.noticeAll(mUserInfo.id, ui.id, "挑战已取消");
 			return true;
 		}
 

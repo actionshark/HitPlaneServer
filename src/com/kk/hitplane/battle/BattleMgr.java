@@ -18,8 +18,8 @@ public class BattleMgr {
 	}
 
 	public static class Req {
-		public UserInfo a;
-		public UserInfo b;
+		public int a;
+		public int b;
 		public long time;
 	}
 
@@ -33,6 +33,8 @@ public class BattleMgr {
 
 	private BattleMgr() {
 		ThreadUtil.run(() -> {
+			Server server = Server.getInstance();
+			
 			synchronized (BattleMgr.this) {
 				for (int i = mReqs.size() - 1; i >= 0; i--) {
 					Req req = mReqs.get(i);
@@ -40,6 +42,9 @@ public class BattleMgr {
 					if (System.currentTimeMillis() - req.time > REQ_TIMEOUT) {
 						mReqs.remove(i);
 						RequestEnd.noticeAll(req.a, req.b, "挑战长时间未回应");
+					} if (server.getUserInfo(req.a) == null || server.getUserInfo(req.b) == null) {
+						mReqs.remove(i);
+						RequestEnd.noticeAll(req.a, req.b, "已下线");
 					}
 				}
 			}
@@ -60,39 +65,39 @@ public class BattleMgr {
 		return null;
 	}
 
-	public synchronized boolean addReq(UserInfo a, UserInfo b) {
+	public synchronized String addReq(UserInfo a, UserInfo b) {
 		if (a.status != UserInfo.STATUS_IDLE || b.status != UserInfo.STATUS_IDLE) {
-			return false;
+			return "用户不是空闲状态";
 		}
 
 		for (Req req : mReqs) {
-			if (a.id == req.a.id || a.id == req.b.id || b.id == req.a.id || b.id == req.b.id) {
-				return false;
+			if (a.id == req.a || a.id == req.b || b.id == req.a || b.id == req.b) {
+				return "已经发起了挑战";
 			}
 		}
 
 		for (Battle bt : mBattles.values()) {
 			if (a.id == bt.a || a.id == bt.b || b.id == bt.a || b.id == bt.b) {
 
-				return false;
+				return "已经在战斗中";
 			}
 		}
 
 		Req req = new Req();
-		req.a = a;
-		req.b = b;
+		req.a = a.id;
+		req.b = b.id;
 		req.time = System.currentTimeMillis();
 
 		mReqs.add(req);
 
-		return true;
+		return null;
 	}
 
 	public synchronized Req removeReq(int a, int b) {
 		for (int i = mReqs.size() - 1; i >= 0; i--) {
 			Req req = mReqs.get(i);
 
-			if (a == req.a.id && b == req.b.id) {
+			if (a == req.a && b == req.b) {
 				mReqs.remove(i);
 				return req;
 			}

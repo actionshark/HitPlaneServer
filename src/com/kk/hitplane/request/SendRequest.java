@@ -5,6 +5,7 @@ import com.kk.hitplane.Server;
 import com.kk.hitplane.UserInfo;
 import com.kk.hitplane.battle.BattleMgr;
 import com.kk.hitplane.reponse.RequestBegin;
+import com.kk.hitplane.reponse.ShowToast;
 
 public class SendRequest extends Request {
 	public int enemy;
@@ -12,8 +13,17 @@ public class SendRequest extends Request {
 	@Override
 	public boolean exe() {
 		UserInfo b = Server.getInstance().getUserInfo(enemy);
+		if (b == null) {
+			ShowToast toast = new ShowToast();
+			toast.text = "对方不在线";
+			toast.send(mUserInfo);
+			return false;
+		}
+		
+		ShowToast toast = new ShowToast();
+		toast.text = BattleMgr.getInstance().addReq(mUserInfo, b);
 
-		if (b != null && BattleMgr.getInstance().addReq(mUserInfo, b)) {
+		if (toast.text == null) {
 			RequestBegin res = new RequestBegin();
 
 			res.id = b.id;
@@ -27,8 +37,10 @@ public class SendRequest extends Request {
 			res.send(b);
 
 			return true;
+		} else {
+			toast.send(mUserInfo);
+			
+			return false;
 		}
-
-		return false;
 	}
 }

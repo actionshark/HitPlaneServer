@@ -2,6 +2,8 @@ package com.kk.hitplane.request;
 
 import com.kk.hitplane.Request;
 import com.kk.hitplane.Server;
+import com.kk.hitplane.battle.Battle;
+import com.kk.hitplane.battle.BattleMgr;
 import com.kk.hitplane.database.UserInfoDB;
 import com.kk.hitplane.reponse.LoginResult;
 import com.kk.hitplane.reponse.UserInfo;
@@ -37,10 +39,10 @@ public class Login extends Request {
 		if (!suc) {
 			return "登录数据出错";
 		}
-
-		if (mUserInfo.status == com.kk.hitplane.UserInfo.STATUS_OFFLINE) {
-			mUserInfo.status = com.kk.hitplane.UserInfo.STATUS_IDLE;
-		}
+		
+		Battle battle = BattleMgr.getInstance().getByUserId(mUserInfo.id);
+		mUserInfo.status = battle == null ? com.kk.hitplane.UserInfo.STATUS_IDLE :
+			com.kk.hitplane.UserInfo.STATUS_BATTLE;
 
 		Server.getInstance().onLogin(mUserInfo);
 

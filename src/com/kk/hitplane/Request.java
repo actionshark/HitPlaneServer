@@ -3,6 +3,7 @@ package com.kk.hitplane;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import com.kk.hitplane.reponse.NeedLogin;
 import com.kk.hitplane.request.Login;
 import com.kk.websocket.log.Level;
 import com.kk.websocket.log.Logger;
@@ -21,6 +22,8 @@ public abstract class Request {
 
 			Class<?> clazz = Class.forName(PKG + "." + name);
 			if (userInfo.status == UserInfo.STATUS_OFFLINE && clazz != Login.class) {
+				NeedLogin nl = new NeedLogin();
+				nl.send(userInfo);
 				return false;
 			}
 
