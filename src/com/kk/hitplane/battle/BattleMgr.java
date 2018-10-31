@@ -34,7 +34,7 @@ public class BattleMgr {
 	private BattleMgr() {
 		ThreadUtil.run(() -> {
 			Server server = Server.getInstance();
-			
+
 			synchronized (BattleMgr.this) {
 				for (int i = mReqs.size() - 1; i >= 0; i--) {
 					Req req = mReqs.get(i);
@@ -42,7 +42,7 @@ public class BattleMgr {
 					if (System.currentTimeMillis() - req.time > REQ_TIMEOUT) {
 						mReqs.remove(i);
 						RequestEnd.noticeAll(req.a, req.b, "挑战长时间未回应");
-					} if (server.getUserInfo(req.a) == null || server.getUserInfo(req.b) == null) {
+					} else if (server.getUserInfo(req.a) == null || server.getUserInfo(req.b) == null) {
 						mReqs.remove(i);
 						RequestEnd.noticeAll(req.a, req.b, "已下线");
 					}

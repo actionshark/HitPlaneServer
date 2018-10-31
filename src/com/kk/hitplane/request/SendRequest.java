@@ -19,7 +19,7 @@ public class SendRequest extends Request {
 			toast.send(mUserInfo);
 			return false;
 		}
-		
+
 		ShowToast toast = new ShowToast();
 		toast.text = BattleMgr.getInstance().addReq(mUserInfo, b);
 
@@ -39,7 +39,7 @@ public class SendRequest extends Request {
 			return true;
 		} else {
 			toast.send(mUserInfo);
-			
+
 			return false;
 		}
 	}

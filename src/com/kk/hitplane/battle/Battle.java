@@ -56,8 +56,6 @@ public class Battle {
 		initTiles();
 
 		mTurn = mRandom.nextBoolean() ? a : b;
-
-		next(0, 0, null);
 	}
 
 	private void initTiles() {
@@ -140,12 +138,10 @@ public class Battle {
 			tc.id = mTurn;
 		}
 
-		if (last != null) {
-			tc.row = row;
-			tc.col = col;
-			tc.tile = new com.kk.hitplane.reponse.BattleInfo.Tile();
-			tc.tile.encode(last);
-		}
+		tc.row = row;
+		tc.col = col;
+		tc.tile = new com.kk.hitplane.reponse.BattleInfo.Tile();
+		tc.tile.encode(last);
 
 		tc.send(aui);
 		tc.send(bui);

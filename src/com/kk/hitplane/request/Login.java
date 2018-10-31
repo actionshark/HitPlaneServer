@@ -39,10 +39,10 @@ public class Login extends Request {
 		if (!suc) {
 			return "登录数据出错";
 		}
-		
+
 		Battle battle = BattleMgr.getInstance().getByUserId(mUserInfo.id);
-		mUserInfo.status = battle == null ? com.kk.hitplane.UserInfo.STATUS_IDLE :
-			com.kk.hitplane.UserInfo.STATUS_BATTLE;
+		mUserInfo.status = battle == null ? com.kk.hitplane.UserInfo.STATUS_IDLE
+				: com.kk.hitplane.UserInfo.STATUS_BATTLE;
 
 		Server.getInstance().onLogin(mUserInfo);
 

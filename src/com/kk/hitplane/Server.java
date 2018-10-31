@@ -36,7 +36,7 @@ public class Server implements ServerEndpoint {
 						removes.add(key);
 					}
 				}
-				
+
 				Logout logout = new Logout();
 				logout.reason = "长时间未请求，自动踢出";
 
@@ -75,12 +75,12 @@ public class Server implements ServerEndpoint {
 
 		if (ui == null) {
 			onOpen(session);
-			
+
 			synchronized (this) {
 				ui = mUsers.get(session);
 			}
 		}
-		
+
 		ui.markRequest();
 		Request.dispatch(ui, text);
 	}
@@ -88,11 +88,11 @@ public class Server implements ServerEndpoint {
 	@Override
 	public void onError(Session session, Throwable error) {
 		UserInfo ui = null;
-		
+
 		synchronized (this) {
 			ui = mUsers.remove(session);
 		}
-		
+
 		if (ui != null) {
 			Logout logout = new Logout();
 			logout.reason = "出错服务器主动断开";
@@ -144,7 +144,7 @@ public class Server implements ServerEndpoint {
 				removes.add(key);
 			}
 		}
-		
+
 		Logout logout = new Logout();
 		logout.reason = "重登录";
 

@@ -9,7 +9,7 @@ public class RequestEnd extends Response {
 
 	public static void noticeAll(int a, int b, String reason) {
 		Server server = Server.getInstance();
-		
+
 		RequestEnd res = new RequestEnd();
 		res.reason = reason;
 
