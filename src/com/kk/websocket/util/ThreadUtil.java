@@ -10,24 +10,18 @@ public class ThreadUtil {
 	private static final ExecutorService sService = Executors.newCachedThreadPool();
 
 	public static void run(Runnable runnable) {
-		sService.submit(runnable);
+		run(runnable, 0);
 	}
 
 	public static void run(Runnable runnable, long delay) {
-		sService.submit(() -> {
-			sleep(delay);
-
-			try {
-				runnable.run();
-			} catch (Exception e) {
-				Logger.getInstance().print(null, Level.E, e);
-			}
-		});
+		run(runnable, delay, 0, 1);
 	}
 
 	public static void run(Runnable runnable, long firstDelay, long repeatDelay, int times) {
 		sService.submit(() -> {
-			sleep(firstDelay);
+			if (firstDelay > 0) {
+				sleep(firstDelay);
+			}
 
 			for (int i = 0; i != times; i++) {
 				try {

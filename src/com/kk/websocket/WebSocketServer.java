@@ -19,7 +19,7 @@ public class WebSocketServer {
 	private ServerSocket mServer;
 
 	private final Map<String, ServerEndpoint> mEndpoint = new HashMap<>();
-	
+
 	private int mSocketCount = 0;
 
 	public synchronized void putEndpoint(String path, ServerEndpoint endpoint) {
@@ -42,16 +42,16 @@ public class WebSocketServer {
 				try {
 					while (true) {
 						Socket socket = mServer.accept();
-						
+
 						Logger.getInstance().print(null, Level.D, "socket count " + (mSocketCount + 1));
 
 						ThreadUtil.run(() -> {
 							synchronized (WebSocketServer.this) {
 								mSocketCount++;
 							}
-							
+
 							dispatchSocket(socket);
-							
+
 							synchronized (WebSocketServer.this) {
 								mSocketCount--;
 							}
@@ -106,7 +106,7 @@ public class WebSocketServer {
 
 			List<WebSocketPackage> packs = new ArrayList<>();
 
-			while (true) {
+			while (!session.isClosed()) {
 				int len = is.read(buf);
 				if (len <= 0) {
 					ThreadUtil.sleep(500);
@@ -191,28 +191,24 @@ public class WebSocketServer {
 			Logger.getInstance().print(null, Level.E, error);
 
 			try {
-				if (endpoint != null) {
+				if (endpoint != null && session != null && !session.isClosed()) {
 					endpoint.onError(session, error);
 				}
 			} catch (Exception e) {
 				Logger.getInstance().print(null, Level.E, e);
 			}
-		}
-
-		try {
+		} finally {
 			if (endpoint != null && session != null) {
-				endpoint.onClose(session);
+				try {
+					endpoint.onClose(session);
+				} catch (Exception e) {
+					Logger.getInstance().print(null, Level.E, e);
+				}
 			}
-		} catch (Exception e) {
-			Logger.getInstance().print(null, Level.E, e);
-		}
 
-		try {
 			if (session != null) {
 				session.close();
 			}
-		} catch (Exception e) {
-			Logger.getInstance().print(null, Level.E, e);
 		}
 	}
 }

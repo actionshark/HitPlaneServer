@@ -1,5 +1,6 @@
 package com.kk.websocket.protocol;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class WebSocketPackage {
 		try {
 			byte[] bs = text.getBytes(DataUtil.CHARSET);
 			return encode(OP_TEXT, bs, 0, bs.length);
-		} catch (Exception e) {
+		} catch (UnsupportedEncodingException e) {
 			Logger.getInstance().print(null, Level.E, e);
 		}
 

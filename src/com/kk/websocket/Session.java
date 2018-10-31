@@ -9,6 +9,8 @@ import com.kk.websocket.protocol.WebSocketPackage;
 
 public class Session {
 	private final Socket mSocket;
+	
+	private boolean mClosed = false;
 
 	public Session(Socket socket) {
 		mSocket = socket;
@@ -41,8 +43,18 @@ public class Session {
 			Logger.getInstance().print(null, Level.E, e, text);
 		}
 	}
+	
+	public boolean isClosed() {
+		return mClosed;
+	}
 
 	public boolean close() {
+		if (mClosed) {
+			return false;
+		}
+		
+		mClosed = true;
+		
 		try {
 			mSocket.close();
 			return true;

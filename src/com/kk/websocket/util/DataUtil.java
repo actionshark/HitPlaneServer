@@ -1,34 +1,20 @@
 package com.kk.websocket.util;
 
+import java.io.IOException;
 import java.io.InputStream;
-
-import com.kk.websocket.log.Level;
-import com.kk.websocket.log.Logger;
 
 public class DataUtil {
 	public static final String CHARSET = "UTF-8";
 
-	public static byte[] readBytes(InputStream is) {
-		try {
-			byte[] buf = new byte[1024 * 64];
-			int len = is.read(buf);
-			return cutBytes(buf, 0, len);
-		} catch (Exception e) {
-			Logger.getInstance().print(null, Level.E, e);
-		}
-
-		return null;
+	public static byte[] readBytes(InputStream is) throws IOException {
+		byte[] buf = new byte[1024 * 64];
+		int len = is.read(buf);
+		return cutBytes(buf, 0, len);
 	}
 
-	public static String readString(InputStream is) {
-		try {
-			byte[] bs = readBytes(is);
-			return new String(bs, CHARSET);
-		} catch (Exception e) {
-			Logger.getInstance().print(null, Level.E, e);
-		}
-
-		return null;
+	public static String readString(InputStream is) throws IOException {
+		byte[] bs = readBytes(is);
+		return new String(bs, CHARSET);
 	}
 
 	public static byte[] cutBytes(byte[] buf, int off, int len) {
