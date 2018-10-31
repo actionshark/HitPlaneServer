@@ -43,6 +43,8 @@ public class Server implements ServerEndpoint {
 				for (Session session : removes) {
 					UserInfo ui = mUsers.remove(session);
 					logout.send(ui);
+					
+					session.close();
 				}
 			}
 		}, 1000, 3000, -1);
@@ -151,6 +153,8 @@ public class Server implements ServerEndpoint {
 		for (Session session : removes) {
 			UserInfo userInfo = mUsers.remove(session);
 			logout.send(userInfo);
+			
+			session.close();
 		}
 	}
 }

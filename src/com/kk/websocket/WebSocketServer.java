@@ -19,6 +19,8 @@ public class WebSocketServer {
 	private ServerSocket mServer;
 
 	private final Map<String, ServerEndpoint> mEndpoint = new HashMap<>();
+	
+	private int mSocketCount = 0;
 
 	public synchronized void putEndpoint(String path, ServerEndpoint endpoint) {
 		mEndpoint.put(path, endpoint);
@@ -40,9 +42,19 @@ public class WebSocketServer {
 				try {
 					while (true) {
 						Socket socket = mServer.accept();
+						
+						Logger.getInstance().print(null, Level.D, "socket count " + (mSocketCount + 1));
 
 						ThreadUtil.run(() -> {
+							synchronized (WebSocketServer.this) {
+								mSocketCount++;
+							}
+							
 							dispatchSocket(socket);
+							
+							synchronized (WebSocketServer.this) {
+								mSocketCount--;
+							}
 						});
 					}
 				} catch (Exception e) {
@@ -175,8 +187,6 @@ public class WebSocketServer {
 					break;
 				}
 			}
-
-			return;
 		} catch (Exception error) {
 			Logger.getInstance().print(null, Level.E, error);
 
