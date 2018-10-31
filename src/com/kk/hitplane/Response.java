@@ -91,6 +91,11 @@ public abstract class Response {
 
 		return jo;
 	}
+	
+	public boolean send(int uid) {
+		UserInfo ui = Server.getInstance().getUserInfo(uid);
+		return send(ui);
+	}
 
 	public boolean send(UserInfo userInfo) {
 		if (userInfo == null) {

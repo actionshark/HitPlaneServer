@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.kk.hitplane.Server;
-import com.kk.hitplane.UserInfo;
 import com.kk.hitplane.database.UserInfoDB;
 import com.kk.hitplane.reponse.BattleEnd;
 import com.kk.hitplane.reponse.TurnChange;
@@ -126,9 +124,6 @@ public class Battle {
 	}
 
 	private void next(int row, int col, Tile last) {
-		UserInfo aui = Server.getInstance().getUserInfo(a);
-		UserInfo bui = Server.getInstance().getUserInfo(b);
-
 		TurnChange tc = new TurnChange();
 
 		if (mTurn == 0) {
@@ -143,8 +138,8 @@ public class Battle {
 		tc.tile = new com.kk.hitplane.reponse.BattleInfo.Tile();
 		tc.tile.encode(last);
 
-		tc.send(aui);
-		tc.send(bui);
+		tc.send(a);
+		tc.send(b);
 
 		if (mTurn == 0) {
 			BattleMgr.getInstance().remove(id);
@@ -152,8 +147,8 @@ public class Battle {
 			BattleEnd be = new BattleEnd();
 			be.encode(last.owner, getTiles());
 
-			be.send(aui);
-			be.send(bui);
+			be.send(a);
+			be.send(b);
 
 			UserInfoDB.updateBattleCount(a, a == last.owner ? 1 : 0, a == last.owner ? 0 : 1);
 			UserInfoDB.updateBattleCount(b, b == last.owner ? 1 : 0, b == last.owner ? 0 : 1);
