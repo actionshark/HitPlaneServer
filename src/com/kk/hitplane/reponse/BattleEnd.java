@@ -11,20 +11,24 @@ public class BattleEnd extends Response {
 		public int owner;
 	}
 
-	public int winnerId;
+	public int uid;
 
-	public List<Tile> tiles = new ArrayList<>();
+	public List<Tile> tiles;
 
-	public void encode(int winnerId, List<com.kk.hitplane.battle.Battle.Tile> tiles) {
-		this.winnerId = winnerId;
-
-		this.tiles.clear();
-
-		for (com.kk.hitplane.battle.Battle.Tile server : tiles) {
-			Tile client = new Tile();
-			client.type = server.type;
-			client.owner = server.owner;
-			this.tiles.add(client);
+	public void encode(int uid, List<com.kk.hitplane.battle.Battle.Tile> tiles) {
+		this.uid = uid;
+		
+		if (tiles == null) {
+			this.tiles = null;
+		} else {
+			this.tiles = new ArrayList<>();
+	
+			for (com.kk.hitplane.battle.Battle.Tile server : tiles) {
+				Tile client = new Tile();
+				client.type = server.type;
+				client.owner = server.owner;
+				this.tiles.add(client);
+			}
 		}
 	}
 }

@@ -56,6 +56,8 @@ public class UserInfoDB {
 			ui.loseCount = rs.getInt(COL_LOSE_COUNT);
 
 			rs.close();
+			
+			handleUserInfo(ui);
 
 			sql = String.format("update %s set %s=%d where %s='%s'", TB_NAME, COL_LOGIN_TIME, now, COL_USERNAME,
 					ui.username);
@@ -165,6 +167,8 @@ public class UserInfoDB {
 			ui.loseCount = rs.getInt(COL_LOSE_COUNT);
 
 			rs.close();
+			
+			handleUserInfo(ui);
 
 			return ui;
 		} catch (Exception e) {
@@ -177,5 +181,11 @@ public class UserInfoDB {
 		}
 
 		return null;
+	}
+	
+	private static void handleUserInfo(UserInfo ui) {
+		if (ui.nickname == null || ui.nickname.equals("")) {
+			ui.nickname = "无名" + ui.id;
+		}
 	}
 }
