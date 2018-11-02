@@ -1,6 +1,6 @@
 package com.kk.hitplane;
 
-import com.kk.websocket.Session;
+import org.java_websocket.WebSocket;
 
 public class UserInfo {
 	public static final int STATUS_OFFLINE = 0;
@@ -8,7 +8,7 @@ public class UserInfo {
 	public static final int STATUS_BATTLE = 2;
 	public static final int STATUS_WATCH = 3;
 
-	public Session session;
+	public WebSocket webSocket;
 
 	public String username;
 	public int id = 0;
@@ -20,8 +20,8 @@ public class UserInfo {
 	public int status = STATUS_OFFLINE;
 	public long lastRequestTime = 0;
 
-	public UserInfo(Session session) {
-		this.session = session;
+	public UserInfo(WebSocket webSocket) {
+		this.webSocket = webSocket;
 	}
 
 	public void markRequest() {

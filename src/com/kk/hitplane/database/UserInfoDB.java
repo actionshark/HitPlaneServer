@@ -4,8 +4,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 import com.kk.hitplane.UserInfo;
-import com.kk.websocket.log.Level;
-import com.kk.websocket.log.Logger;
+import com.kk.hitplane.log.Level;
+import com.kk.hitplane.log.Logger;
 
 public class UserInfoDB {
 	public static final String TB_NAME = "userinfo";
@@ -56,7 +56,7 @@ public class UserInfoDB {
 			ui.loseCount = rs.getInt(COL_LOSE_COUNT);
 
 			rs.close();
-			
+
 			handleUserInfo(ui);
 
 			sql = String.format("update %s set %s=%d where %s='%s'", TB_NAME, COL_LOGIN_TIME, now, COL_USERNAME,
@@ -167,7 +167,7 @@ public class UserInfoDB {
 			ui.loseCount = rs.getInt(COL_LOSE_COUNT);
 
 			rs.close();
-			
+
 			handleUserInfo(ui);
 
 			return ui;
@@ -182,7 +182,7 @@ public class UserInfoDB {
 
 		return null;
 	}
-	
+
 	private static void handleUserInfo(UserInfo ui) {
 		if (ui.nickname == null || ui.nickname.equals("")) {
 			ui.nickname = "无名" + ui.id;

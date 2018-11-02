@@ -8,7 +8,7 @@ import java.util.Map;
 import com.kk.hitplane.Server;
 import com.kk.hitplane.UserInfo;
 import com.kk.hitplane.reponse.RequestEnd;
-import com.kk.websocket.util.ThreadUtil;
+import com.kk.hitplane.util.ThreadUtil;
 
 public class BattleMgr {
 	private static BattleMgr sInstance = new BattleMgr();

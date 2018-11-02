@@ -1,8 +1,7 @@
 package com.kk.hitplane;
 
-import com.kk.websocket.WebSocketServer;
-import com.kk.websocket.log.FileLogger;
-import com.kk.websocket.log.Logger;
+import com.kk.hitplane.log.FileLogger;
+import com.kk.hitplane.log.Logger;
 
 public class Main {
 	public static void main(String[] args) {
@@ -10,11 +9,8 @@ public class Main {
 		logger.setFiles("log1.txt", "log2.txt");
 		Logger.setInstance(logger);
 
+		Server.init(10001);
 		Server server = Server.getInstance();
 		server.start();
-
-		WebSocketServer wss = new WebSocketServer();
-		wss.putEndpoint("hitplane", server);
-		wss.start(10001);
 	}
 }

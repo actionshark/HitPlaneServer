@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.kk.websocket.log.Level;
-import com.kk.websocket.log.Logger;
+import com.kk.hitplane.log.Level;
+import com.kk.hitplane.log.Logger;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -91,7 +91,7 @@ public abstract class Response {
 
 		return jo;
 	}
-	
+
 	public boolean send(int uid) {
 		UserInfo ui = Server.getInstance().getUserInfo(uid);
 		return send(ui);
@@ -104,7 +104,7 @@ public abstract class Response {
 
 		try {
 			JSONObject jo = pack();
-			userInfo.session.send(jo.toString());
+			userInfo.webSocket.send(jo.toString());
 			return true;
 		} catch (Exception e) {
 			Logger.getInstance().print(null, Level.E, e);

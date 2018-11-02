@@ -3,10 +3,10 @@ package com.kk.hitplane;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import com.kk.hitplane.log.Level;
+import com.kk.hitplane.log.Logger;
 import com.kk.hitplane.reponse.NeedLogin;
 import com.kk.hitplane.request.Login;
-import com.kk.websocket.log.Level;
-import com.kk.websocket.log.Logger;
 
 import net.sf.json.JSONObject;
 

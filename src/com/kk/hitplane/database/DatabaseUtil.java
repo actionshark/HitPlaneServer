@@ -4,8 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 
-import com.kk.websocket.log.Level;
-import com.kk.websocket.log.Logger;
+import com.kk.hitplane.log.Level;
+import com.kk.hitplane.log.Logger;
 
 public class DatabaseUtil {
 	private static DatabaseUtil sInstance = new DatabaseUtil();
