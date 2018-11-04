@@ -17,8 +17,8 @@ public class UserInfoDB {
 	public static final String COL_CREATE_TIME = "create_time";
 	public static final String COL_LOGIN_TIME = "login_time";
 
-	public static final String COL_WIN_COUNT = "win_count";
-	public static final String COL_LOSE_COUNT = "lose_count";
+	public static final String COL_MONEY = "money";
+	public static final int MONEY_INIT = 10000;
 
 	private static Statement getStatement() {
 		return DatabaseUtil.getInstance().getStatement();
@@ -38,8 +38,8 @@ public class UserInfoDB {
 			if (!rs.next()) {
 				rs.close();
 
-				sql = String.format("insert into %s (%s, %s) values('%s', %d)", TB_NAME, COL_USERNAME, COL_CREATE_TIME,
-						ui.username, now);
+				sql = String.format("insert into %s (%s, %s, %s) values('%s', %d, %d)", TB_NAME, COL_USERNAME,
+						COL_CREATE_TIME, COL_MONEY, ui.username, now, MONEY_INIT);
 				int ct = stmt.executeUpdate(sql);
 
 				if (ct != 1) {
@@ -51,9 +51,7 @@ public class UserInfoDB {
 
 			ui.id = rs.getInt(COL_ID);
 			ui.nickname = rs.getString(COL_NICKNAME);
-
-			ui.winCount = rs.getInt(COL_WIN_COUNT);
-			ui.loseCount = rs.getInt(COL_LOSE_COUNT);
+			ui.money = rs.getInt(COL_MONEY);
 
 			rs.close();
 
@@ -99,7 +97,7 @@ public class UserInfoDB {
 			int ct = stmt.executeUpdate(sql);
 
 			if (ct != 1) {
-				return "修改昵称数据失败";
+				return "修改数据失败";
 			}
 
 			ui.nickname = nickname;
@@ -117,21 +115,21 @@ public class UserInfoDB {
 		return "修改昵称失败";
 	}
 
-	public static synchronized boolean updateBattleCount(int uid, int winDelta, int loseDelta) {
+	public static synchronized String changeMoney(int id, int delta) {
 		Statement stmt = null;
 
 		try {
 			stmt = getStatement();
 
-			String sql = String.format("update %s set %s=%s+%d, %s=%s+%d where %s=%d", TB_NAME, COL_WIN_COUNT,
-					COL_WIN_COUNT, winDelta, COL_LOSE_COUNT, COL_LOSE_COUNT, loseDelta, COL_ID, uid);
+			String sql = String.format("update %s set %s=%s%+d where %s=%d", TB_NAME, COL_MONEY, COL_MONEY, delta,
+					COL_ID, id);
 			int ct = stmt.executeUpdate(sql);
 
 			if (ct != 1) {
-				return false;
+				return "修改数据失败";
 			}
 
-			return true;
+			return null;
 		} catch (Exception e) {
 			Logger.getInstance().print(null, Level.E, e);
 		} finally {
@@ -141,7 +139,7 @@ public class UserInfoDB {
 			}
 		}
 
-		return false;
+		return "修改余额失败";
 	}
 
 	public static synchronized UserInfo getUserInfo(int id) {
@@ -162,9 +160,7 @@ public class UserInfoDB {
 			ui.username = rs.getString(COL_USERNAME);
 			ui.id = id;
 			ui.nickname = rs.getString(COL_NICKNAME);
-
-			ui.winCount = rs.getInt(COL_WIN_COUNT);
-			ui.loseCount = rs.getInt(COL_LOSE_COUNT);
+			ui.money = rs.getInt(COL_MONEY);
 
 			rs.close();
 

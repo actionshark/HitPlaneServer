@@ -2,7 +2,6 @@ package com.kk.hitplane;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,12 +11,9 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
-import com.kk.hitplane.reponse.Logout;
-import com.kk.hitplane.util.ThreadUtil;
+import com.kk.hitplane.response.Logout;
 
 public class Server extends WebSocketServer {
-	public static final long CLOSE_DURATION = 30000;
-
 	private static Server sServer;
 
 	public static void init(int port) {
@@ -38,63 +34,16 @@ public class Server extends WebSocketServer {
 
 	@Override
 	public void onStart() {
-		ThreadUtil.run(() -> {
-			List<WebSocket> removes = new ArrayList<>();
-
-			synchronized (Server.this) {
-				for (Entry<WebSocket, UserInfo> entry : mUsers.entrySet()) {
-					WebSocket key = entry.getKey();
-					UserInfo value = entry.getValue();
-
-					if (System.currentTimeMillis() - value.lastRequestTime > CLOSE_DURATION) {
-						removes.add(key);
-					}
-				}
-
-				Logout logout = new Logout();
-				logout.reason = "长时间未请求，自动踢出";
-
-				for (WebSocket webSocket : removes) {
-					UserInfo ui = mUsers.remove(webSocket);
-					logout.send(ui);
-
-					webSocket.close();
-				}
-			}
-		}, 1000, 3000, -1);
 	}
 
-	public UserInfo getUserInfo(int id) {
-		synchronized (this) {
-			for (UserInfo ui : mUsers.values()) {
-				if (ui.id == id) {
-					return ui;
-				}
+	public synchronized UserInfo getUserInfo(int id) {
+		for (UserInfo ui : mUsers.values()) {
+			if (ui.id == id) {
+				return ui;
 			}
 		}
 
 		return null;
-	}
-
-	public List<UserInfo> getUserList() {
-		List<UserInfo> list = new ArrayList<>();
-
-		synchronized (this) {
-			for (UserInfo ui : mUsers.values()) {
-				if (ui.status != UserInfo.STATUS_OFFLINE) {
-					list.add(ui);
-				}
-			}
-		}
-
-		list.sort(new Comparator<UserInfo>() {
-			@Override
-			public int compare(UserInfo a, UserInfo b) {
-				return a.id - b.id;
-			}
-		});
-
-		return list;
 	}
 
 	public synchronized void onLogin(UserInfo ui) {
@@ -121,20 +70,14 @@ public class Server extends WebSocketServer {
 	}
 
 	@Override
-	public void onOpen(WebSocket ws, ClientHandshake hs) {
+	public synchronized void onOpen(WebSocket ws, ClientHandshake hs) {
 		UserInfo ui = new UserInfo(ws);
-		ui.markRequest();
-
-		synchronized (this) {
-			mUsers.put(ws, ui);
-		}
+		mUsers.put(ws, ui);
 	}
 
 	@Override
-	public void onClose(WebSocket ws, int code, String reason, boolean remote) {
-		synchronized (this) {
-			mUsers.remove(ws);
-		}
+	public synchronized void onClose(WebSocket ws, int code, String reason, boolean remote) {
+		mUsers.remove(ws);
 	}
 
 	@Override
@@ -153,7 +96,6 @@ public class Server extends WebSocketServer {
 			}
 		}
 
-		ui.markRequest();
 		Request.dispatch(ui, message);
 	}
 

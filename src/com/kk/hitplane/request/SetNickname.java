@@ -2,8 +2,8 @@ package com.kk.hitplane.request;
 
 import com.kk.hitplane.Request;
 import com.kk.hitplane.database.UserInfoDB;
-import com.kk.hitplane.reponse.ShowToast;
-import com.kk.hitplane.reponse.UserInfo;
+import com.kk.hitplane.response.ShowToast;
+import com.kk.hitplane.response.UserInfo;
 
 public class SetNickname extends Request {
 	public String nickname;

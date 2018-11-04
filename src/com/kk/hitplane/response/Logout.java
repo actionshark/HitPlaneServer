@@ -1,4 +1,4 @@
-package com.kk.hitplane.reponse;
+package com.kk.hitplane.response;
 
 import com.kk.hitplane.Response;
 

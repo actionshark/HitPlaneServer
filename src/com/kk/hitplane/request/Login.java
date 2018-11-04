@@ -2,11 +2,9 @@ package com.kk.hitplane.request;
 
 import com.kk.hitplane.Request;
 import com.kk.hitplane.Server;
-import com.kk.hitplane.battle.Battle;
-import com.kk.hitplane.battle.BattleMgr;
 import com.kk.hitplane.database.UserInfoDB;
-import com.kk.hitplane.reponse.LoginResult;
-import com.kk.hitplane.reponse.UserInfo;
+import com.kk.hitplane.response.LoginResult;
+import com.kk.hitplane.response.UserInfo;
 
 public class Login extends Request {
 	public String username;
@@ -39,10 +37,6 @@ public class Login extends Request {
 		if (!suc) {
 			return "登录数据出错";
 		}
-
-		Battle battle = BattleMgr.getInstance().getByUserId(mUserInfo.id);
-		mUserInfo.status = battle == null ? com.kk.hitplane.UserInfo.STATUS_IDLE
-				: com.kk.hitplane.UserInfo.STATUS_BATTLE;
 
 		Server.getInstance().onLogin(mUserInfo);
 
